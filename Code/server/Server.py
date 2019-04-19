@@ -39,34 +39,6 @@ class Server:
                 print("Connection Reset by peer -- restarting")
                 self.run()
 
-    def run(self):
-        logging.info("Starting server on {}:{}...".format(self.HOST, self.PORT))
-        logging.debug("Searching for pattern: {}".format(self.PATTERN))
-        # Needed this otherwise the process hogs the port for a while
-        socketserver.TCPServer.allow_reuse_address = True
-
-        try:
-            tcpServer = socketserver.TCPServer((self.HOST, self.PORT), tcp.TCPHandler)
-        except:
-            print("Unable to start server! Please check host and port.")
-            print("Exiting...")
-            return
-        
-        tcpServer.pattern = self.PATTERN
-        tcpServer.validCount = 0
-        tcpServer.invalidCount = 0
-        with tcpServer as server:
-            try:
-                print("CTRL+C to exit")
-                server.serve_forever();
-            except KeyboardInterrupt:
-                self.output_statistics(tcpServer.validCount, tcpServer.invalidCount)
-                print("\nShutting Down")
-                raise SystemExit
-            except ConnectionResetError:
-                print("Connection Reset by peer -- restarting")
-                self.run()
-
     def run_log(self, log_file):
         logging.info("Starting server on {}:{}...".format(self.HOST, self.PORT))
         logging.debug("Searching for pattern: {}".format(self.PATTERN))
